@@ -2,6 +2,7 @@ package com.github.martinfrank.endlessbuilding.gui;
 
 import com.github.martinfrank.endlessbuilding.game.Game;
 import com.github.martinfrank.endlessbuilding.map.Map;
+import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -17,7 +18,7 @@ public class RootController {
     private final Game game;
 
     @FXML
-    private CivMapCanvas mapCanvas;
+    private MapCanvas mapCanvas;
 
     @FXML
     private TextArea console;
@@ -29,8 +30,9 @@ public class RootController {
     }
 
 
-    public void init() {
+    public void init(ResourceManager resourceManager) {
         LOGGER.debug("mapCanvas: {}", mapCanvas);
+        mapCanvas.setImageManager(resourceManager);
         mapCanvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             int x = (int) mouseEvent.getX();
             int y = (int) mouseEvent.getY();
@@ -57,8 +59,27 @@ public class RootController {
         console.clear();
     }
 
-    public void endTurnButton(ActionEvent actionEvent) {
-        game.endTurn();
-        redrawMap();
+    public void scaleMap(ScaleFactor factor) {
+        mapCanvas.setScaleFactor(factor);
+
+    }
+
+    public void setScaleSmall(ActionEvent actionEvent) {
+        scaleMap(ScaleFactor.SMALL);
+    }
+
+    public void setScaleMedium(ActionEvent actionEvent) {
+        scaleMap(ScaleFactor.MEDIUM);
+    }
+
+    public void setScaleBig(ActionEvent actionEvent) {
+        scaleMap(ScaleFactor.BIG);
+    }
+
+    public void pauseGame(ActionEvent actionEvent) {
+
+    }
+
+    public void continueGame(ActionEvent actionEvent) {
     }
 }

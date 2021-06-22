@@ -6,22 +6,41 @@ import com.github.martinfrank.endlessbuilding.map.Map;
 import com.github.martinfrank.endlessbuilding.map.MapEdge;
 import com.github.martinfrank.endlessbuilding.map.MapField;
 import com.github.martinfrank.endlessbuilding.map.MapNode;
+import com.github.martinfrank.endlessbuilding.mapdata.MapFieldType;
+import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class CivMapCanvas extends Canvas {
+public class MapCanvas extends Canvas {
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(CivMapCanvas.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapCanvas.class);
 
     private Map map;
+    private ResourceManager resourceManager;
+    private ScaleFactor scaleFactor = ScaleFactor.MEDIUM;
 
-    public void setMap(Map map) {
-        this.map = map;
+    public void setImageManager(ResourceManager resourceManager) {
+        this.resourceManager = resourceManager;
+    }
+
+    public void setScaleFactor(ScaleFactor factor) {
+        if (factor != null) {
+            this.scaleFactor = factor;
+            if (map != null) {
+                map.scale(scaleFactor.scaleFactor);
+                resize();
+                drawMap();
+            }
+        }
+    }
+
+    private void resize() {
         int h = (int) map.getTransformed().getHeight();
         int w = (int) map.getTransformed().getWidth();
         setHeight(h);
@@ -34,28 +53,37 @@ public class CivMapCanvas extends Canvas {
         } else {
             setHeight(map.getTransformed().getHeight());
         }
+    }
+
+    public void setMap(Map map) {
+        if (map != null) {
+            this.map = map;
+            resize();
+        }
         drawMap();
     }
 
     void drawMap() {
+        getGraphicsContext2D().setFill(Color.WHITE);
+        getGraphicsContext2D().fillRect(0, 0, getWidth(), getHeight());
         if (map != null) {
             map.getFields().forEach(this::drawField);
         }
     }
 
     private void drawNode(MapNode node) {
-        GraphicsContext gc = getGraphicsContext2D();
-        gc.setStroke(Color.RED);
-        gc.setLineWidth(5);
-        Point point = node.getPoint().getTransformed();
-        gc.strokeLine(point.getX(), point.getY(), point.getX(), point.getY());
+//        GraphicsContext gc = getGraphicsContext2D();
+//        gc.setStroke(Color.RED);
+//        gc.setLineWidth(5);
+//        Point point = node.getPoint().getTransformed();
+//        gc.strokeLine(point.getX(), point.getY(), point.getX(), point.getY());
     }
 
     private void drawEdge(MapEdge edge) {
         GraphicsContext gc = getGraphicsContext2D();
-        gc.setFill(Color.GREEN);
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(3);
+        gc.setFill(Color.BLACK);
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(1);
 
         Point a = edge.getLine().getTransformed().getA();
         Point b = edge.getLine().getTransformed().getB();
@@ -65,18 +93,34 @@ public class CivMapCanvas extends Canvas {
     private void drawField(MapField field) {
         GraphicsContext gc = getGraphicsContext2D();
         gc.setFill(Color.GRAY);
-//        Player owner = field.getData().getOwner();
-//        if (owner != null) {
-//            gc.setFill(fromArgb(owner.getColor()));
-//        }
         gc.setStroke(Color.DARKGRAY);
         gc.setLineWidth(1);
 
+        //should only be done once not per field
         Shape shape = field.getShape().getTransformed();
         double[] xs = shape.getPoints().stream().mapToDouble(Point::getX).toArray();
         double[] ys = shape.getPoints().stream().mapToDouble(Point::getY).toArray();
+        double x = shape.getPoints().stream().mapToDouble(Point::getX).min().orElse(0);
+        double y = shape.getPoints().stream().mapToDouble(Point::getY).min().orElse(0);
+        double w = shape.getPoints().stream().mapToDouble(Point::getX).max().orElse(0) - x;
+        double h = shape.getPoints().stream().mapToDouble(Point::getY).max().orElse(0) - y;
         int amount = xs.length;
+
+        if (field.getData().getMapFieldType() == MapFieldType.WATER) {
+            gc.setFill(Color.BLUE);
+        }
+
+        if (field.getData().getMapFieldType() == MapFieldType.PLAINS) {
+            gc.setFill(Color.GREEN);
+        }
         gc.fillPolygon(xs, ys, amount);
+        Image image = resourceManager.image.getImage(field.getData().getMapFieldType(), scaleFactor);
+
+        if (image != null) {
+            System.out.println("w/h=" + w + "/" + h);
+            System.out.println("image: " + image + " @" + x + "/" + y);
+            gc.drawImage(image, x - 1, y - 1);
+        }
 
         field.getEdges().forEach(this::drawEdge);
         field.getNodes().forEach(this::drawNode);
@@ -107,5 +151,6 @@ public class CivMapCanvas extends Canvas {
         LOGGER.debug("b {}", b);
         return new Color(r, g, b, a);
     }
+
 
 }

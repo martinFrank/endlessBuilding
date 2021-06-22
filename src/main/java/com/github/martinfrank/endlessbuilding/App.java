@@ -3,6 +3,7 @@ package com.github.martinfrank.endlessbuilding;
 import com.github.martinfrank.endlessbuilding.game.Game;
 import com.github.martinfrank.endlessbuilding.gui.ControllerFactory;
 import com.github.martinfrank.endlessbuilding.gui.RootController;
+import com.github.martinfrank.endlessbuilding.gui.ScaleFactor;
 import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -39,7 +40,8 @@ public class App extends Application {
         }
         RootController rootController = controllerFactory.getRootController();
         game.init();
-        rootController.init();
+        rootController.init(resourceManager);
+        rootController.scaleMap(ScaleFactor.SMALL);
     }
 
     @Override
