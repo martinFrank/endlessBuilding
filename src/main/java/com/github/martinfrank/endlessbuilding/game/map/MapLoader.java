@@ -6,6 +6,8 @@ import com.github.martinfrank.endlessbuilding.map.MapField;
 import com.github.martinfrank.endlessbuilding.mapdata.MapFieldType;
 import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import com.github.martinfrank.maplib.MapStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,6 +15,8 @@ import javax.xml.bind.Unmarshaller;
 import java.net.MalformedURLException;
 
 public class MapLoader {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapLoader.class);
 
     private final ResourceManager resourceManager;
     private final MapFactory mapFactory;

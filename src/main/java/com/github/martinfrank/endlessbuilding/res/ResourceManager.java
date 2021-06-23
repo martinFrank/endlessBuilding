@@ -3,6 +3,8 @@ package com.github.martinfrank.endlessbuilding.res;
 import com.github.martinfrank.endlessbuilding.gui.ScaleFactor;
 import com.github.martinfrank.endlessbuilding.mapdata.MapFieldType;
 import javafx.scene.image.Image;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -11,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ResourceManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceManager.class);
 
     private final ClassLoader classLoader;
     public final ImageManager image;
@@ -38,8 +42,6 @@ public class ResourceManager {
     }
 
     public URL getMapFieldImage(String filename) throws MalformedURLException {
-        String targetImage = "PNG/Tiles/" + filename;
-        System.out.println("targetImage: " + targetImage);
         return resourceURL("PNG/Tiles/" + filename);
     }
 
@@ -54,7 +56,7 @@ public class ResourceManager {
             images.put(ScaleFactor.SMALL, new HashMap<>());
         }
 
-        public Image getImage(MapFieldType mapFieldType, ScaleFactor scaleFactor) {
+        public Image getMapTileImage(MapFieldType mapFieldType, ScaleFactor scaleFactor) {
             if (mapFieldType == MapFieldType.WATER) {
                 return null;
             }
@@ -82,10 +84,17 @@ public class ResourceManager {
         private String imageMapping(MapFieldType mapFieldType) {
             switch (mapFieldType) {
                 case PLAINS:
-                    return "Terrain/Grass/grass_03.png";
-                default:
                     return "Terrain/Grass/grass_05.png";
+                case FORREST:
+                    return "Terrain/Grass/grass_12.png";
+                case ROCKS:
+                    return "Terrain/Grass/grass_15.png";
+                case MOUNTAIN:
+                    return "Terrain/Grass/grass_14.png";
+                default:
+                    return "Terrain/Grass/grass_03.png";
             }
         }
+
     }
 }

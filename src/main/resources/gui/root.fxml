@@ -1,41 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--        <VBox>-->
-<!--            <fx:include source="cardstack.fxml" />-->
-<!--            <TextArea fx:id="console" VBox.vgrow="ALWAYS" />-->
-<!--            <fx:include source="playerdeck.fxml" />-->
-<!--        </VBox>-->
-
 <?import com.github.martinfrank.endlessbuilding.gui.MapCanvas?>
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.github.martinfrank.endlessbuilding.gui.RootController">
-    <!--    <fx:include source="menu.fxml" />-->
+
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10"/>
+    </padding>
+
     <HBox spacing="10" VBox.vgrow="ALWAYS">
-        <padding>
-            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
-        </padding>
         <ScrollPane hbarPolicy="ALWAYS" prefViewportHeight="232" prefViewportWidth="328" vbarPolicy="ALWAYS"
                     HBox.hgrow="ALWAYS">
             <MapCanvas fx:id="mapCanvas"/>
         </ScrollPane>
-        <VBox> <!-- prefHeight="200.0" prefWidth="100.0"> -->
+        <VBox>
             <children>
-                <HBox> <!--prefHeight="100.0" prefWidth="200.0"> -->
+                <HBox>
+
                     <children>
-                        <Button mnemonicParsing="false" text="small" onAction="#setScaleSmall"/>
-                        <Button mnemonicParsing="false" text="medium" onAction="#setScaleMedium"/>
-                        <Button mnemonicParsing="false" text="big" onAction="#setScaleBig"/>
+
+                        <Label text="map size:">
+                            <padding>
+                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                            </padding>
+                        </Label>
+                        <RadioButton onAction="#setScaleSmall" text="small">
+                            <padding>
+                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                            </padding>
+                            <toggleGroup>
+                                <ToggleGroup fx:id="radioButtonGroup"/>
+                            </toggleGroup>
+                        </RadioButton>
+                        <RadioButton onAction="#setScaleMedium" selected="true" text="medium"
+                                     toggleGroup="$radioButtonGroup">
+                            <padding>
+                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                            </padding>
+                        </RadioButton>
+                        <RadioButton onAction="#setScaleBig" text="medium" toggleGroup="$radioButtonGroup">
+                            <padding>
+                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                            </padding>
+                        </RadioButton>
+                        <Separator orientation="VERTICAL"/> <!--prefHeight="200.0" />-->
+                        <Label text="game speed:">
+                            <padding>
+                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                            </padding>
+                        </Label>
+                        <ToggleButton onAction="#togglePause" text="play/pause">
+                            <padding>
+                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                            </padding>
+                        </ToggleButton>
                     </children>
                 </HBox>
-                <HBox> <!--prefHeight="100.0" prefWidth="200.0">-->
-                    <children>
-                        <Button mnemonicParsing="false" text="pause" onAction="#pauseGame"/>
-                        <Button mnemonicParsing="false" text="normal" onAction="#continueGame"/>
-                    </children>
-                </HBox>
+                <fx:include source="toolbox.fxml" VBox.vgrow="ALWAYS"/>
             </children>
         </VBox>
     </HBox>

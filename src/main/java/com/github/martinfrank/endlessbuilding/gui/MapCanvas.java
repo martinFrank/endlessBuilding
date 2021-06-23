@@ -24,6 +24,8 @@ public class MapCanvas extends Canvas {
     private Map map;
     private ResourceManager resourceManager;
     private ScaleFactor scaleFactor = ScaleFactor.MEDIUM;
+    private double xOff;
+    private double yOff;
 
     public void setImageManager(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
@@ -53,6 +55,8 @@ public class MapCanvas extends Canvas {
         } else {
             setHeight(map.getTransformed().getHeight());
         }
+        xOff = scaleFactor.tileWidth / 2d;
+        yOff = scaleFactor.tileHeight / 2d;
     }
 
     public void setMap(Map map) {
@@ -96,14 +100,11 @@ public class MapCanvas extends Canvas {
         gc.setStroke(Color.DARKGRAY);
         gc.setLineWidth(1);
 
-        //should only be done once not per field
         Shape shape = field.getShape().getTransformed();
         double[] xs = shape.getPoints().stream().mapToDouble(Point::getX).toArray();
         double[] ys = shape.getPoints().stream().mapToDouble(Point::getY).toArray();
-        double x = shape.getPoints().stream().mapToDouble(Point::getX).min().orElse(0);
-        double y = shape.getPoints().stream().mapToDouble(Point::getY).min().orElse(0);
-        double w = shape.getPoints().stream().mapToDouble(Point::getX).max().orElse(0) - x;
-        double h = shape.getPoints().stream().mapToDouble(Point::getY).max().orElse(0) - y;
+        double x = shape.getCenter().getX() - xOff;
+        double y = shape.getCenter().getY() - yOff;
         int amount = xs.length;
 
         if (field.getData().getMapFieldType() == MapFieldType.WATER) {
@@ -114,12 +115,10 @@ public class MapCanvas extends Canvas {
             gc.setFill(Color.GREEN);
         }
         gc.fillPolygon(xs, ys, amount);
-        Image image = resourceManager.image.getImage(field.getData().getMapFieldType(), scaleFactor);
+        Image image = resourceManager.image.getMapTileImage(field.getData().getMapFieldType(), scaleFactor);
 
         if (image != null) {
-            System.out.println("w/h=" + w + "/" + h);
-            System.out.println("image: " + image + " @" + x + "/" + y);
-            gc.drawImage(image, x - 1, y - 1);
+            gc.drawImage(image, x, y);
         }
 
         field.getEdges().forEach(this::drawEdge);

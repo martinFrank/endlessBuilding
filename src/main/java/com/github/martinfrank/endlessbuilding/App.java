@@ -26,10 +26,12 @@ public class App extends Application {
 
     private Pane root;
 
+    private Game game;
+
     @Override
     public void init() {
         ResourceManager resourceManager = new ResourceManager(getClass().getClassLoader());
-        Game game = new Game(resourceManager);
+        game = new Game(resourceManager);
         ControllerFactory controllerFactory = new ControllerFactory(game);
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(resourceManager.getGuiRoot());
@@ -41,7 +43,7 @@ public class App extends Application {
         RootController rootController = controllerFactory.getRootController();
         game.init();
         rootController.init(resourceManager);
-        rootController.scaleMap(ScaleFactor.SMALL);
+        rootController.scaleMap(ScaleFactor.MEDIUM);
     }
 
     @Override
@@ -55,6 +57,13 @@ public class App extends Application {
             Platform.exit();
             System.exit(0);
         }
+
+        game.start();
     }
 
+    @Override
+    public void stop() throws Exception {
+        game.stop();
+        super.stop();
+    }
 }

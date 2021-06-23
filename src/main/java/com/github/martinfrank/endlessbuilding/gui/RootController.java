@@ -1,28 +1,30 @@
 package com.github.martinfrank.endlessbuilding.gui;
 
 import com.github.martinfrank.endlessbuilding.game.Game;
+import com.github.martinfrank.endlessbuilding.game.GameEvent;
+import com.github.martinfrank.endlessbuilding.game.GameEventListener;
 import com.github.martinfrank.endlessbuilding.map.Map;
 import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class RootController {
+public class RootController implements GameEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RootController.class);
+
     private GuiEventListener eventListener;
     private final Game game;
 
     @FXML
-    private MapCanvas mapCanvas;
+    public ToggleGroup radioButtonGroup;
 
     @FXML
-    private TextArea console;
-
+    private MapCanvas mapCanvas;
 
     public RootController(Game game) {
         this.game = game;
@@ -31,7 +33,6 @@ public class RootController {
 
 
     public void init(ResourceManager resourceManager) {
-        LOGGER.debug("mapCanvas: {}", mapCanvas);
         mapCanvas.setImageManager(resourceManager);
         mapCanvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             int x = (int) mouseEvent.getX();
@@ -39,7 +40,15 @@ public class RootController {
             MouseSelection selection = mapCanvas.getSelectionAt(x, y);
             eventListener.mouseSelect(selection);
         });
+
+        game.addGameEventListener(this);
+
         setMap(game.getMap());
+        initIncomeTable();
+    }
+
+    private void initIncomeTable() {
+
     }
 
     public void setMap(Map map) {
@@ -53,10 +62,6 @@ public class RootController {
 
     public void redrawMap() {
         mapCanvas.drawMap();
-    }
-
-    public void clearConsole() {
-        console.clear();
     }
 
     public void scaleMap(ScaleFactor factor) {
@@ -76,10 +81,18 @@ public class RootController {
         scaleMap(ScaleFactor.BIG);
     }
 
-    public void pauseGame(ActionEvent actionEvent) {
+    public void togglePause(ActionEvent actionEvent) {
 
     }
 
     public void continueGame(ActionEvent actionEvent) {
+    }
+
+    public void selectLumber(ActionEvent actionEvent) {
+    }
+
+    @Override
+    public void gameEvent(GameEvent gameEvent) {
+
     }
 }

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.github.martinfrank.endlessbuilding.gui.ToolboxController">
+    <children>
+
+        <HBox alignment="CENTER_LEFT">
+            <padding>
+                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+            </padding>
+
+            <children>
+                <Label text="Selected tool: "/>
+                <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../PNG/Tiles/Medieval/medieval_lumber.png"/>
+                    </image>
+                </ImageView>
+            </children>
+        </HBox>
+
+        <GridPane hgap="4" vgap="4">
+
+            <padding>
+                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+            </padding>
+
+            <columnConstraints>
+                <ColumnConstraints/>
+                <ColumnConstraints/>
+                <ColumnConstraints/>
+                <ColumnConstraints/>
+                <ColumnConstraints/>
+                <ColumnConstraints/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints/>
+            </rowConstraints>
+
+            <children>
+                <Button onAction="#selectLumber" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../PNG/Tiles/Medieval/medieval_lumber.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../PNG/Tiles/Medieval/medieval_mine_2.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../PNG/Tiles/Medieval/medieval_farm.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button GridPane.columnIndex="3" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../PNG/Tiles/Medieval/medieval_blacksmith.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button GridPane.columnIndex="4" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../PNG/Tiles/Medieval/medieval_lumber.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button GridPane.columnIndex="5" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../PNG/Tiles/Medieval/medieval_lumber.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </children>
+        </GridPane>
+
+        <TableView fx:id="table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="columnResource" prefWidth="75.0" text="Resource"/>
+                <TableColumn fx:id="columnIncome" prefWidth="75.0" text="income"/>
+                <TableColumn fx:id="columnBalance" prefWidth="75.0" text="balance"/>
+                <!--                    <TableColumn prefWidth="75.0" text="info" />-->
+            </columns>
+        </TableView>
+
+    </children>
+</VBox>

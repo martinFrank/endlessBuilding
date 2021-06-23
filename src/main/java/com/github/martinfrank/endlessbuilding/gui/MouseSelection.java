@@ -64,6 +64,7 @@ public class MouseSelection {
 
     @Override
     public String toString() {
-        return "mouse selection @ " + x + "/" + y + " field='" + (field == null ? "" : field.getIndex()) + "', edge='" + edge + "', node='" + node + "'.";
+        String fieldInfo = field == null ? "null" : field.getIndex().toString() + " " + field.getData().getMapFieldType();
+        return "mouse selection @ " + x + "/" + y + " field='" + fieldInfo + "', edge='" + edge + "', node='" + node + "'.";
     }
 }

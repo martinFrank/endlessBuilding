@@ -13,28 +13,52 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Game implements GuiEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
 
+    private final List<GameEventListener> gameEventListenerList;
     private Map map;
     private final ResourceManager resourceManager;
     private MapWalker walker;
+    private final Thread gameThread;
+    private int i = 0;
+
+    private static final int TICK_DURATION_IN_MILLIS = 250;
+    private boolean isRunning;
 
     public Game(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
+        gameThread = new Thread(createGameLoop());
+        gameEventListenerList = new ArrayList<>();
     }
 
-    public void endTurn() {
+    private Runnable createGameLoop() {
+        return () -> {
+
+            try {
+                while (isRunning) {
+                    Thread.sleep(TICK_DURATION_IN_MILLIS);
+                    tick();
+                    i++;
+                    if (i % 4 == 0) {
+                        LOGGER.debug("tick" + System.currentTimeMillis() / 1000);
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
     }
 
     public void init() {
+        //FIXME errorHandling
         try {
             setupMap();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (JAXBException e) {
+        } catch (MalformedURLException | JAXBException e) {
             e.printStackTrace();
         }
     }
@@ -44,11 +68,10 @@ public class Game implements GuiEventListener {
         MapFactory mapFactory = new MapFactory(mapPartFactory);
         MapLoader maploader = new MapLoader(resourceManager, mapFactory);
         map = maploader.loadDefaultMap();
-//        map.scale(7.5f);
-        //big: scale=30, width=120,h=120 -> Image(getImageUrl(mapFieldType).toString(),120,120,false,true);
-        //medium: scale=15, width=60,h=60 -> Image(getImageUrl(mapFieldType).toString(),60,60,false,true);
-        //small: scale=7.5, width=30,h=30 -> Image(getImageUrl(mapFieldType).toString(),31,31,false,true);
         walker = mapPartFactory.createWalker();
+    }
+
+    private void tick() {
     }
 
     @Override
@@ -60,4 +83,18 @@ public class Game implements GuiEventListener {
         return map;
     }
 
+    public void start() {
+        isRunning = true;
+        gameThread.start();
+    }
+
+    public void stop() {
+        isRunning = false;
+    }
+
+    public void addGameEventListener(GameEventListener gameEventListener) {
+        if (!gameEventListenerList.contains(gameEventListener)) {
+            gameEventListenerList.add(gameEventListener);
+        }
+    }
 }
