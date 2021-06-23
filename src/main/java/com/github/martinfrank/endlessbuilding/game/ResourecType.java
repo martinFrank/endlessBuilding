@@ -2,5 +2,5 @@ package com.github.martinfrank.endlessbuilding.game;
 
 public enum ResourecType {
 
-    WOOD, BOARD, STONE, IRON, COAL, STEEL
+    WOOD, BOARD, STONE, IRON, COAL, STEEL, HAY, FOOD, WORKER
 }

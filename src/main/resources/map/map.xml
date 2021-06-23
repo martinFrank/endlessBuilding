@@ -28,8 +28,8 @@
     <!-- 1 -->
     <field x="0" y="1" type="WATER"/>
     <field x="1" y="1" type="WATER"/>
-    <field x="2" y="1" type="WATER"/>
-    <field x="3" y="1" type="WATER"/>
+    <field x="2" y="1" type="FORREST"/>
+    <field x="3" y="1" type="FORREST"/>
     <field x="4" y="1" type="WATER"/>
     <field x="5" y="1" type="WATER"/>
     <field x="6" y="1" type="WATER"/>

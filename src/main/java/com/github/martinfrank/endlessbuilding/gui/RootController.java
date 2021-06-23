@@ -8,6 +8,7 @@ import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,8 @@ public class RootController implements GameEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RootController.class);
 
-    private GuiEventListener eventListener;
     private final Game game;
+    private final ToolSelection toolSelection;
 
     @FXML
     public ToggleGroup radioButtonGroup;
@@ -26,9 +27,9 @@ public class RootController implements GameEventListener {
     @FXML
     private MapCanvas mapCanvas;
 
-    public RootController(Game game) {
+    public RootController(Game game, ToolSelection toolSelection) {
         this.game = game;
-        setGuiEventListener(game);
+        this.toolSelection = toolSelection;
     }
 
 
@@ -38,7 +39,10 @@ public class RootController implements GameEventListener {
             int x = (int) mouseEvent.getX();
             int y = (int) mouseEvent.getY();
             MouseSelection selection = mapCanvas.getSelectionAt(x, y);
-            eventListener.mouseSelect(selection);
+            selection.setMousePrimary(mouseEvent.getButton() == MouseButton.PRIMARY);
+            selection.setMouseSecondary(mouseEvent.getButton() == MouseButton.SECONDARY);
+            selection.setTool(toolSelection.selected);
+            game.mouseSelect(selection);
         });
 
         game.addGameEventListener(this);
@@ -54,10 +58,6 @@ public class RootController implements GameEventListener {
     public void setMap(Map map) {
         mapCanvas.setMap(map);
         redrawMap();
-    }
-
-    public void setGuiEventListener(GuiEventListener eventListener) {
-        this.eventListener = eventListener;
     }
 
     public void redrawMap() {

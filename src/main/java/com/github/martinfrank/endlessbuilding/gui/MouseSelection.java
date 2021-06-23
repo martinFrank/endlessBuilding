@@ -12,6 +12,9 @@ public class MouseSelection {
     private MapNode node;
     private MapEdge edge;
     private MapField field;
+    private Tool tool;
+    private boolean mousePrimary;
+    private boolean mouseSecondary;
 
     public MouseSelection(int x, int y) {
         this.x = x;
@@ -60,6 +63,30 @@ public class MouseSelection {
 
     public int getY() {
         return y;
+    }
+
+    public Tool getTool() {
+        return tool;
+    }
+
+    public void setTool(Tool tool) {
+        this.tool = tool;
+    }
+
+    public boolean isMousePrimary() {
+        return mousePrimary;
+    }
+
+    public void setMousePrimary(boolean mouseLeft) {
+        this.mousePrimary = mouseLeft;
+    }
+
+    public boolean isMouseSecondary() {
+        return mouseSecondary;
+    }
+
+    public void setMouseSecondary(boolean mouseSecondary) {
+        this.mouseSecondary = mouseSecondary;
     }
 
     @Override

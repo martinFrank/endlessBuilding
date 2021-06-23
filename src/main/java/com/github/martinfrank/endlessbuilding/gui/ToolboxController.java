@@ -4,13 +4,16 @@ import com.github.martinfrank.endlessbuilding.game.Game;
 import com.github.martinfrank.endlessbuilding.game.GameEvent;
 import com.github.martinfrank.endlessbuilding.game.GameEventListener;
 import com.github.martinfrank.endlessbuilding.game.ResourceSummary;
+import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,10 @@ public class ToolboxController implements GameEventListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ToolboxController.class);
 
     private final Game game;
+
+    private final ResourceManager resourceManager;
+
+    private final ToolSelection toolSelection;
 
     private final List<ResourceSummary> data = new ArrayList<>();
 
@@ -37,44 +44,64 @@ public class ToolboxController implements GameEventListener {
     @FXML
     public TableColumn<ResourceSummary, String> columnResource;
 
+    @FXML
+    public ImageView selectedTool;
+
+    @FXML
+    public Label basicCosts;
 
     private ObservableList<ResourceSummary> obsList;
-    private boolean once = false;
 
-    public ToolboxController(Game game) {
+    public ToolboxController(Game game, ResourceManager resourceManager, ToolSelection toolSelection) {
         this.game = game;
+        this.resourceManager = resourceManager;
+        this.toolSelection = toolSelection;
         game.addGameEventListener(this);
     }
 
-    private void initTable() {
-
+    public void init() {
         obsList = FXCollections.observableArrayList(data);
-//        table.getItems()
-        //clmTicketName.setCellValueFactory(new PropertyValueFactory<Ticket, String>("ticketName"));
-        columnResource.setCellValueFactory(new PropertyValueFactory<ResourceSummary, String>("resourceType"));
-        columnIncome.setCellValueFactory(new PropertyValueFactory<ResourceSummary, String>("income"));
-        columnBalance.setCellValueFactory(new PropertyValueFactory<ResourceSummary, String>("balance"));
-    }
-
-    public void selectLumber(ActionEvent actionEvent) {
-        if (!once) {
-            once = true;
-            initTable();
-        }
-        LOGGER.debug("peng peng {}", table);
-//        data.add("peng");
-
-        ResourceSummary rs = new ResourceSummary("iron");
-        rs.setBalance(20.34);
-        rs.setIncome(12.34);
-        obsList.add(rs);
-
-        table.setItems(obsList);
+        columnResource.setCellValueFactory(new PropertyValueFactory<>("resourceType"));
+        columnIncome.setCellValueFactory(new PropertyValueFactory<>("income"));
+        columnBalance.setCellValueFactory(new PropertyValueFactory<>("balance"));
     }
 
 
     @Override
     public void gameEvent(GameEvent gameEvent) {
-
+        obsList.clear();
+        obsList.addAll(gameEvent.resourceSummarys);
+        table.setItems(obsList);
     }
+
+    public void selectFurnaceTool(ActionEvent actionEvent) {
+        updateToolIcon(toolSelection.selectFurnaceTool());
+    }
+
+    public void selectFarmTool(ActionEvent actionEvent) {
+        updateToolIcon(toolSelection.selectFarmTool());
+    }
+
+    public void selectMineTool(ActionEvent actionEvent) {
+        updateToolIcon(toolSelection.selectMineTool());
+    }
+
+    public void selectLumberTool(ActionEvent actionEvent) {
+        updateToolIcon(toolSelection.selectLumbermillTool());
+    }
+
+    public void selectInfoTool(ActionEvent actionEvent) {
+        updateToolIcon(toolSelection.selectInfoTool());
+    }
+
+    public void selectHarvestTool(ActionEvent actionEvent) {
+        updateToolIcon(toolSelection.selectHarvestTool());
+    }
+
+    private void updateToolIcon(Tool tool) {
+        LOGGER.debug("Image: {}", resourceManager.image.getIcon(tool));
+        selectedTool.setImage(resourceManager.image.getIcon(tool));
+    }
+
+
 }

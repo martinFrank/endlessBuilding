@@ -2,16 +2,16 @@ package com.github.martinfrank.endlessbuilding.game;
 
 public class ResourceSummary {
 
-    public final String resourceType;
-    public double income;
-    public double balance;
+    private final ResourecType resourceType;
+    private double income;
+    private double balance;
 
 
-    public ResourceSummary(String resourceType) {
+    public ResourceSummary(ResourecType resourceType) {
         this.resourceType = resourceType;
     }
 
-    public String getResourceType() {
+    public ResourecType getResourceType() {
         return resourceType;
     }
 

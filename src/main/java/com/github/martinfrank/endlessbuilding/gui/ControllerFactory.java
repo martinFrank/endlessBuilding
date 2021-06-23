@@ -1,6 +1,7 @@
 package com.github.martinfrank.endlessbuilding.gui;
 
 import com.github.martinfrank.endlessbuilding.game.Game;
+import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,22 +12,31 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
 
     private final Game game;
 
+    private final ResourceManager resourceManager;
+
+    private final ToolSelection toolSelection;
+
     private RootController rootController;
 
-    public ControllerFactory(Game game) {
+    private ToolboxController toolboxController;
+
+    public ControllerFactory(Game game, ResourceManager resourceManager) {
         this.game = game;
+        this.resourceManager = resourceManager;
+        toolSelection = new ToolSelection();
     }
 
     @Override
     public Object call(Class<?> type) {
         if (type == RootController.class) {
             LOGGER.debug("create RootController");
-            rootController = new RootController(game);
+            rootController = new RootController(game, toolSelection);
             return rootController;
         }
         if (type == ToolboxController.class) {
             LOGGER.debug("create ToolboxController");
-            return new ToolboxController(game);
+            toolboxController = new ToolboxController(game, resourceManager, toolSelection);
+            return toolboxController;
         } else {
             // default behavior for controllerFactory:
             try {
@@ -42,5 +52,8 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
         return rootController;
     }
 
+    public ToolboxController getToolboxController() {
+        return toolboxController;
+    }
 
 }

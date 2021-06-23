@@ -15,11 +15,13 @@
 
             <children>
                 <Label text="Selected tool: "/>
-                <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="selectedTool" fitHeight="60.0" fitWidth="70.0" pickOnBounds="true"
+                           preserveRatio="true">
                     <image>
                         <Image url="@../PNG/Tiles/Medieval/medieval_lumber.png"/>
                     </image>
                 </ImageView>
+                <Label fx:id="basicCosts" text="Basic costs"/>
             </children>
         </HBox>
 
@@ -39,10 +41,29 @@
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints/>
+                <RowConstraints/>
             </rowConstraints>
 
             <children>
-                <Button onAction="#selectLumber" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Button onAction="#selectInfoTool" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../PNG/Tiles/infoTile.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button onAction="#selectHarvestTool" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../PNG/Tiles/harvest.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button onAction="#selectLumberTool" GridPane.columnIndex="2" GridPane.rowIndex="0">
                     <graphic>
                         <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -51,7 +72,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Button onAction="#selectMineTool" GridPane.columnIndex="3" GridPane.rowIndex="0">
                     <graphic>
                         <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -60,7 +81,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <Button onAction="#selectFarmTool" GridPane.columnIndex="4" GridPane.rowIndex="0">
                     <graphic>
                         <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -69,7 +90,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button GridPane.columnIndex="3" GridPane.rowIndex="0">
+                <Button onAction="#selectFurnaceTool" GridPane.columnIndex="5" GridPane.rowIndex="0">
                     <graphic>
                         <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -78,7 +99,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button GridPane.columnIndex="4" GridPane.rowIndex="0">
+                <Button GridPane.columnIndex="0" GridPane.rowIndex="1">
                     <graphic>
                         <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -87,7 +108,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button GridPane.columnIndex="5" GridPane.rowIndex="0">
+                <Button GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <graphic>
                         <ImageView fitHeight="60.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                             <image>

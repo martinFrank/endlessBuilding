@@ -4,6 +4,7 @@ import com.github.martinfrank.endlessbuilding.game.Game;
 import com.github.martinfrank.endlessbuilding.gui.ControllerFactory;
 import com.github.martinfrank.endlessbuilding.gui.RootController;
 import com.github.martinfrank.endlessbuilding.gui.ScaleFactor;
+import com.github.martinfrank.endlessbuilding.gui.ToolboxController;
 import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -32,7 +33,7 @@ public class App extends Application {
     public void init() {
         ResourceManager resourceManager = new ResourceManager(getClass().getClassLoader());
         game = new Game(resourceManager);
-        ControllerFactory controllerFactory = new ControllerFactory(game);
+        ControllerFactory controllerFactory = new ControllerFactory(game, resourceManager);
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(resourceManager.getGuiRoot());
             fxmlLoader.setControllerFactory(controllerFactory);
@@ -40,9 +41,15 @@ public class App extends Application {
         } catch (IOException e) {
             LOGGER.debug("error", e);
         }
-        RootController rootController = controllerFactory.getRootController();
+
         game.init();
+
+        RootController rootController = controllerFactory.getRootController();
         rootController.init(resourceManager);
+
+        ToolboxController toolboxController = controllerFactory.getToolboxController();
+        toolboxController.init();
+
         rootController.scaleMap(ScaleFactor.MEDIUM);
     }
 
@@ -50,10 +57,10 @@ public class App extends Application {
     public void start(Stage stage) {
         if (root != null) {
             stage.setScene(new Scene(root));
-            stage.setTitle("tbd: set title");
+            stage.setTitle("...endless building...");
             stage.show();
         } else {
-            LOGGER.debug("error during init");
+            LOGGER.error("error during init");
             Platform.exit();
             System.exit(0);
         }

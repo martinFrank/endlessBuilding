@@ -1,11 +1,11 @@
 package com.github.martinfrank.endlessbuilding.game;
 
-public class Price {
+public class QualityUnit { //deutsch: Mengeneinheit
 
     public final ResourecType unit;
     public final double amount;
 
-    public Price(ResourecType unit, double amount) {
+    public QualityUnit(ResourecType unit, double amount) {
         this.unit = unit;
         this.amount = amount;
     }
