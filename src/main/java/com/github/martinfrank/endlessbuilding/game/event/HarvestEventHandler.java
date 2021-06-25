@@ -1,10 +1,7 @@
 package com.github.martinfrank.endlessbuilding.game.event;
 
-import com.github.martinfrank.endlessbuilding.game.FieldQualityUnitMapper;
-import com.github.martinfrank.endlessbuilding.game.Game;
-import com.github.martinfrank.endlessbuilding.game.QualityUnit;
+import com.github.martinfrank.endlessbuilding.game.*;
 import com.github.martinfrank.endlessbuilding.gui.MouseSelection;
-import com.github.martinfrank.endlessbuilding.gui.Tool;
 import com.github.martinfrank.endlessbuilding.mapdata.MapFieldData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +17,7 @@ public class HarvestEventHandler extends MouseEventHandler {
     }
 
     @Override
-    public void handle(MouseSelection selection) {
-        LOGGER.debug("handle...");
+    public GameEvent handle(MouseSelection selection) {
         if (selection.isMousePrimary() &&
                 selection.hasField() &&
                 selection.getTool() == Tool.HARVEST
@@ -30,7 +26,9 @@ public class HarvestEventHandler extends MouseEventHandler {
             if (data.getEnhancement() == null) {
                 List<QualityUnit> gatheredResource = FieldQualityUnitMapper.get(selection.getField().getData().getMapFieldType());
                 game.addFieldHarvest(gatheredResource);
+                return new GameEvent(game);
             }
         }
+        return null;
     }
 }

@@ -115,7 +115,14 @@ public class MapCanvas extends Canvas {
             gc.setFill(Color.GREEN);
         }
         gc.fillPolygon(xs, ys, amount);
-        Image image = resourceManager.image.getMapTileImage(field.getData().getMapFieldType(), scaleFactor);
+
+        Image image;
+        if (field.getData().getEnhancement() != null) {
+            image = resourceManager.image.getEnhancementTileImage(field.getData().getEnhancement().type, scaleFactor);
+        } else {
+            image = resourceManager.image.getMapTileImage(field.getData().getMapFieldType(), scaleFactor);
+        }
+
 
         if (image != null) {
             gc.drawImage(image, x, y);

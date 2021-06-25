@@ -1,6 +1,7 @@
 package com.github.martinfrank.endlessbuilding.gui;
 
 
+import com.github.martinfrank.endlessbuilding.game.Tool;
 import com.github.martinfrank.endlessbuilding.map.MapEdge;
 import com.github.martinfrank.endlessbuilding.map.MapField;
 import com.github.martinfrank.endlessbuilding.map.MapNode;

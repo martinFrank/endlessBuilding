@@ -60,6 +60,7 @@
                     </children>
                 </HBox>
                 <fx:include source="toolbox.fxml" VBox.vgrow="ALWAYS"/>
+                <TextArea fx:id="infoTextArea"/>
             </children>
         </VBox>
     </HBox>

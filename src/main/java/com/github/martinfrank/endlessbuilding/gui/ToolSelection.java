@@ -1,12 +1,10 @@
 package com.github.martinfrank.endlessbuilding.gui;
 
+import com.github.martinfrank.endlessbuilding.game.Tool;
+
 public class ToolSelection {
 
     public Tool selected;
-
-    public Tool selectInfoTool() {
-        return setTool(Tool.INFO);
-    }
 
     public Tool selectLumbermillTool() {
         return setTool(Tool.LUMBERMILL);

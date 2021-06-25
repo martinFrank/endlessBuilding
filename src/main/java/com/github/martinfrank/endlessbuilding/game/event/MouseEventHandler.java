@@ -1,6 +1,7 @@
 package com.github.martinfrank.endlessbuilding.game.event;
 
 import com.github.martinfrank.endlessbuilding.game.Game;
+import com.github.martinfrank.endlessbuilding.game.GameEvent;
 import com.github.martinfrank.endlessbuilding.gui.MouseSelection;
 
 public abstract class MouseEventHandler {
@@ -11,5 +12,5 @@ public abstract class MouseEventHandler {
         this.game = game;
     }
 
-    public abstract void handle(MouseSelection selection);
+    public abstract GameEvent handle(MouseSelection selection);
 }

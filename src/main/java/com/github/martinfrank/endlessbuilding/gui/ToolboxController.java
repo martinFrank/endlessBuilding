@@ -1,9 +1,6 @@
 package com.github.martinfrank.endlessbuilding.gui;
 
-import com.github.martinfrank.endlessbuilding.game.Game;
-import com.github.martinfrank.endlessbuilding.game.GameEvent;
-import com.github.martinfrank.endlessbuilding.game.GameEventListener;
-import com.github.martinfrank.endlessbuilding.game.ResourceSummary;
+import com.github.martinfrank.endlessbuilding.game.*;
 import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -88,10 +85,6 @@ public class ToolboxController implements GameEventListener {
 
     public void selectLumberTool(ActionEvent actionEvent) {
         updateToolIcon(toolSelection.selectLumbermillTool());
-    }
-
-    public void selectInfoTool(ActionEvent actionEvent) {
-        updateToolIcon(toolSelection.selectInfoTool());
     }
 
     public void selectHarvestTool(ActionEvent actionEvent) {

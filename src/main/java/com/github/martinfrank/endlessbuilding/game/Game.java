@@ -1,5 +1,6 @@
 package com.github.martinfrank.endlessbuilding.game;
 
+import com.github.martinfrank.endlessbuilding.game.event.AddEnhancementHandler;
 import com.github.martinfrank.endlessbuilding.game.event.HarvestEventHandler;
 import com.github.martinfrank.endlessbuilding.game.event.MouseEventHandler;
 import com.github.martinfrank.endlessbuilding.game.map.MapLoader;
@@ -9,7 +10,6 @@ import com.github.martinfrank.endlessbuilding.map.Map;
 import com.github.martinfrank.endlessbuilding.map.MapFactory;
 import com.github.martinfrank.endlessbuilding.map.MapPartFactory;
 import com.github.martinfrank.endlessbuilding.map.MapWalker;
-import com.github.martinfrank.endlessbuilding.mapdata.MapFieldType;
 import com.github.martinfrank.endlessbuilding.res.ResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class Game implements GuiEventListener {
 
@@ -44,7 +45,15 @@ public class Game implements GuiEventListener {
         gameEventListeners = new ArrayList<>();
         mouseEventHandlers = new ArrayList<>();
         mouseEventHandlers.add(new HarvestEventHandler(this));
+        mouseEventHandlers.add(new AddEnhancementHandler(this));
         balance = new HashMap<>();
+        initBalance();
+    }
+
+    private void initBalance() {
+        for (ResourecType resourecType : ResourecType.values()) {
+            balance.put(resourecType, 0d);
+        }
     }
 
     private Runnable createGameLoop() {
@@ -83,11 +92,93 @@ public class Game implements GuiEventListener {
     }
 
     private void tick() {
+        gatherRessources();
+        notifyGui(new GameEvent(this));
+    }
+
+    private void gatherRessources() {
+        List<Enhancement> enhancements = map.getEnhancements();
+        enhancements.forEach(this::gatherRessources);
+    }
+
+    private void gatherRessources(Enhancement enhancement) {
+        List<QualityUnit> upkeepCost = enhancement.getUpkeep();
+        List<QualityUnit> withdrawFromBalance = reduceBalance(upkeepCost);
+        double percent = calculatePercent(upkeepCost, withdrawFromBalance);
+        LOGGER.debug("factor (%) " + percent);
+        gatherRessources(enhancement, percent);
+    }
+
+    private void gatherRessources(Enhancement enhancement, double percent) {
+        List<QualityUnit> outcomes = enhancement.getIncome(percent);
+        for (QualityUnit outcome : outcomes) {
+            double current = balance.get(outcome.unit);
+            double temp = current;
+            current = current + outcome.amount;
+            balance.put(outcome.unit, current);
+            LOGGER.debug("increasing {} from {} to {} (walue:{}", outcome.unit, temp, current, outcome.amount);
+        }
+    }
+
+    private double calculatePercent(List<QualityUnit> upkeepCost, List<QualityUnit> fromBalance) {
+        double percent = 1;
+        for (QualityUnit demand : upkeepCost) {
+            Optional<QualityUnit> balOpt = fromBalance.stream().filter(qu -> qu.unit == demand.unit).findAny();
+            if (!balOpt.isPresent()) {
+                return 0;
+            } else {
+                double bal = balOpt.get().amount;
+                double dem = demand.amount;
+                double newPercent = bal / dem;
+                if (newPercent < percent) {
+                    percent = newPercent;
+                }
+            }
+        }
+        return percent;
+    }
+
+    public List<QualityUnit> reduceBalance(List<QualityUnit> expenses) {
+        List<QualityUnit> outputFromBalance = new ArrayList<>();
+        for (QualityUnit demand : expenses) {
+            double ret;
+            double bal = balance.get(demand.unit);
+            if (demand.amount > bal) {
+                ret = bal;
+                balance.put(demand.unit, 0d);
+            } else {
+                ret = demand.amount;
+                balance.put(demand.unit, bal - demand.amount);
+            }
+            outputFromBalance.add(new QualityUnit(demand.unit, ret));
+        }
+        return outputFromBalance;
+    }
+
+    public boolean hasBalance(List<QualityUnit> expenses) {
+        for (QualityUnit demand : expenses) {
+            double bal = balance.get(demand.unit);
+            LOGGER.debug("demand: " + demand.amount + " of " + demand.unit + "  in stock: " + bal);
+            if (demand.amount > bal) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public void mouseSelect(MouseSelection selection) {
-        mouseEventHandlers.forEach(meh -> meh.handle(selection));
+        //FIXME Feedback from handler
+        mouseEventHandlers.forEach(meh -> notifyGui(meh.handle(selection)));
+    }
+
+    public void notifyGui(GameEvent gameEvent) {
+        LOGGER.debug("gui event? :" + gameEvent);
+        if (gameEvent != null) {
+            for (GameEventListener eventListener : gameEventListeners) {
+                eventListener.gameEvent(gameEvent);
+            }
+        }
     }
 
     public void addFieldHarvest(List<QualityUnit> gatheredResource) {
@@ -96,22 +187,7 @@ public class Game implements GuiEventListener {
             current = current + qu.amount;
             balance.put(qu.unit, current);
         }
-        updateGameEventListener();
-
     }
-
-    private void updateGameEventListener() {
-
-        GameEvent gameEvent = new GameEvent(this);
-        for (GameEventListener eventListener : gameEventListeners) {
-            eventListener.gameEvent(gameEvent);
-        }
-    }
-
-    private void gatherRessource(MapFieldType mapFieldType) {
-
-    }
-
 
     public Map getMap() {
         return map;
@@ -120,7 +196,7 @@ public class Game implements GuiEventListener {
     public void start() {
         isRunning = true;
         gameThread.start();
-        updateGameEventListener();
+        notifyGui(new GameEvent(this));
     }
 
     public void stop() {

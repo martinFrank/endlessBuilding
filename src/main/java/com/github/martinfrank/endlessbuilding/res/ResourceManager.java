@@ -1,7 +1,8 @@
 package com.github.martinfrank.endlessbuilding.res;
 
+import com.github.martinfrank.endlessbuilding.game.EnhancementType;
+import com.github.martinfrank.endlessbuilding.game.Tool;
 import com.github.martinfrank.endlessbuilding.gui.ScaleFactor;
-import com.github.martinfrank.endlessbuilding.gui.Tool;
 import com.github.martinfrank.endlessbuilding.mapdata.MapFieldType;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
@@ -49,24 +50,43 @@ public class ResourceManager {
 
     public class ImageManager {
 
-        private final Map<ScaleFactor, Map<MapFieldType, Image>> images = new HashMap<>();
+        private final Map<ScaleFactor, Map<MapFieldType, Image>> mapTiles = new HashMap<>();
+        private final Map<ScaleFactor, Map<EnhancementType, Image>> enhancementTiles = new HashMap<>();
         private final Map<Tool, Image> icons = new HashMap<>();
 
         private ImageManager() {
-            images.put(ScaleFactor.BIG, new HashMap<>());
-            images.put(ScaleFactor.MEDIUM, new HashMap<>());
-            images.put(ScaleFactor.SMALL, new HashMap<>());
+            mapTiles.put(ScaleFactor.BIG, new HashMap<>());
+            mapTiles.put(ScaleFactor.MEDIUM, new HashMap<>());
+            mapTiles.put(ScaleFactor.SMALL, new HashMap<>());
+
+            enhancementTiles.put(ScaleFactor.BIG, new HashMap<>());
+            enhancementTiles.put(ScaleFactor.MEDIUM, new HashMap<>());
+            enhancementTiles.put(ScaleFactor.SMALL, new HashMap<>());
         }
 
         public Image getMapTileImage(MapFieldType mapFieldType, ScaleFactor scaleFactor) {
             if (mapFieldType == MapFieldType.WATER) {
                 return null;
             }
-            Image fromMap = images.get(scaleFactor).get(mapFieldType);
+            Image fromMap = mapTiles.get(scaleFactor).get(mapFieldType);
             if (fromMap == null) {
                 try {
                     fromMap = loadImage(mapFieldType, scaleFactor);
-                    images.get(scaleFactor).put(mapFieldType, fromMap);
+                    mapTiles.get(scaleFactor).put(mapFieldType, fromMap);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            return fromMap;
+        }
+
+        public Image getEnhancementTileImage(EnhancementType enhancementType, ScaleFactor scaleFactor) {
+            Image fromMap = enhancementTiles.get(scaleFactor).get(enhancementType);
+            if (fromMap == null) {
+                try {
+                    fromMap = loadImage(enhancementType, scaleFactor);
+                    enhancementTiles.get(scaleFactor).put(enhancementType, fromMap);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
@@ -79,8 +99,16 @@ public class ResourceManager {
             return new Image(getImageUrl(mapFieldType).toString(), scaleFactor.tileWidth, scaleFactor.tileHeight, false, true);
         }
 
+        private Image loadImage(EnhancementType enhancementType, ScaleFactor scaleFactor) throws MalformedURLException {
+            return new Image(getImageUrl(enhancementType).toString(), scaleFactor.tileWidth, scaleFactor.tileHeight, false, true);
+        }
+
         private URL getImageUrl(MapFieldType mapFieldType) throws MalformedURLException {
             return ResourceManager.this.getMapFieldImage(imageMapping(mapFieldType));
+        }
+
+        private URL getImageUrl(EnhancementType enhancementType) throws MalformedURLException {
+            return ResourceManager.this.getMapFieldImage(imageMapping(enhancementType));
         }
 
         private String imageMapping(MapFieldType mapFieldType) {
@@ -93,6 +121,15 @@ public class ResourceManager {
                     return "Terrain/Grass/grass_15.png";
                 case MOUNTAIN:
                     return "Terrain/Grass/grass_14.png";
+                default:
+                    return "Terrain/Grass/grass_03.png";
+            }
+        }
+
+        private String imageMapping(EnhancementType enhancementType) {
+            switch (enhancementType) {
+                case LUMBERMILL:
+                    return "Medieval/medieval_lumber.png";
                 default:
                     return "Terrain/Grass/grass_03.png";
             }
@@ -121,8 +158,6 @@ public class ResourceManager {
 
         private String iconMapping(Tool tool) {
             switch (tool) {
-                case INFO:
-                    return "infoTile.png";
                 case HARVEST:
                     return "harvest.png";
                 case LUMBERMILL:
