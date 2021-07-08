@@ -45,7 +45,11 @@ public class ToolboxController implements GameEventListener {
     public ImageView selectedTool;
 
     @FXML
+    public Label toolName;
+
+    @FXML
     public Label basicCosts;
+
 
     private ObservableList<ResourceSummary> obsList;
 
@@ -71,24 +75,35 @@ public class ToolboxController implements GameEventListener {
         table.setItems(obsList);
     }
 
+    private void updateToolSelection(Tool tool) {
+        updateToolIcon(tool);
+        toolName.setText(tool.name());
+        Enhancement enhancement = resourceManager.enhancementManager.getEnhancement(Enhancement.getEnhancementType(tool));
+        LOGGER.debug("enhancement {}", enhancement);
+        if (enhancement != null) {
+            basicCosts.setText(enhancement.basicCosts.toString());
+        }
+    }
+
+
     public void selectFurnaceTool(ActionEvent actionEvent) {
-        updateToolIcon(toolSelection.selectFurnaceTool());
+        updateToolSelection(toolSelection.selectFurnaceTool());
     }
 
     public void selectFarmTool(ActionEvent actionEvent) {
-        updateToolIcon(toolSelection.selectFarmTool());
+        updateToolSelection(toolSelection.selectFarmTool());
     }
 
     public void selectMineTool(ActionEvent actionEvent) {
-        updateToolIcon(toolSelection.selectMineTool());
+        updateToolSelection(toolSelection.selectMineTool());
     }
 
     public void selectLumberTool(ActionEvent actionEvent) {
-        updateToolIcon(toolSelection.selectLumbermillTool());
+        updateToolSelection(toolSelection.selectLumbermillTool());
     }
 
     public void selectHarvestTool(ActionEvent actionEvent) {
-        updateToolIcon(toolSelection.selectHarvestTool());
+        updateToolSelection(toolSelection.selectHarvestTool());
     }
 
     private void updateToolIcon(Tool tool) {

@@ -1,57 +1,49 @@
 package com.github.martinfrank.endlessbuilding.game;
 
 import com.github.martinfrank.endlessbuilding.mapdata.MapFieldType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Enhancement {
 
-    public static final Enhancement LUMBERMILL = createLumberMill();
+    private static final Logger LOGGER = LoggerFactory.getLogger(Enhancement.class);
+
+//    public static final Enhancement LUMBERMILL = createLumberMill();
 
     public final EnhancementType type;
     public final List<QualityUnit> basicIncome;
-    public final MapFieldType mapFieldType;
+    public final List<MapFieldType> mapFieldTypes;
     public final List<QualityUnit> basicCosts;
     public final List<QualityUnit> basicUpkeep;
     public int level;
-    public double efficency; // in percent: 0...1
 
-    public Enhancement(EnhancementType type, MapFieldType mapFieldType, List<QualityUnit> basicIncome, List<QualityUnit> basicCosts, List<QualityUnit> basicUpkeep) {
+    public Enhancement(EnhancementType type, List<MapFieldType> mapFieldTypes, List<QualityUnit> basicIncome, List<QualityUnit> basicCosts, List<QualityUnit> basicUpkeep) {
         this.type = type;
-        this.mapFieldType = mapFieldType;
+        this.mapFieldTypes = mapFieldTypes;
         this.basicIncome = basicIncome;
         this.basicCosts = basicCosts;
         this.basicUpkeep = basicUpkeep;
-        level = 0;
-        efficency = 0;
+        level = 2;
     }
 
-    private static Enhancement createLumberMill() {
-        QualityUnit costWood = new QualityUnit(ResourecType.WOOD, 16);
-        QualityUnit costStone = new QualityUnit(ResourecType.STONE, 16);
-        List<QualityUnit> costs = new ArrayList<>();
-        costs.add(costWood);
-        costs.add(costStone);
-
-        QualityUnit incomeWood = new QualityUnit(ResourecType.WOOD, 0.1);
-        List<QualityUnit> incomes = new ArrayList<>();
-        incomes.add(incomeWood);
-
-        QualityUnit upkeepStone = new QualityUnit(ResourecType.STONE, 1);
-        List<QualityUnit> upkeep = new ArrayList<>();
-//        upkeep.add(upkeepStone);
-        return new Enhancement(EnhancementType.LUMBERMILL, MapFieldType.FORREST, incomes, costs, upkeep);
-    }
-
-    public static Enhancement getEnhancement(Tool tool) {
+    public static EnhancementType getEnhancementType(Tool tool) {
         if (tool == null) {
             return null;
         }
         switch (tool) {
             case LUMBERMILL:
-                return LUMBERMILL;
+                return EnhancementType.LUMBERMILL;
+            case QUARRY:
+                return EnhancementType.QUARRY;
+            case MINE:
+                return EnhancementType.MINE;
+            case FURNACE:
+                return EnhancementType.FURNACE;
+            case FARM:
+                return EnhancementType.FARM;
             default:
                 return null;
         }
@@ -59,22 +51,32 @@ public class Enhancement {
 
     @Override
     public String toString() {
-        return "Field Type" + mapFieldType + " gathered Resources";
+        return "Enhancement{" +
+                "type=" + type +
+                ", basicIncome=" + basicIncome +
+                ", mapFieldTypes=" + mapFieldTypes +
+                ", basicCosts=" + basicCosts +
+                ", basicUpkeep=" + basicUpkeep +
+                ", level=" + level +
+                '}';
     }
 
     public List<QualityUnit> getUpkeep() {
-        int factor = 2 ^ level;
+        double factor = getLevelFactor();
         return basicUpkeep.stream().
                 map(qu -> new QualityUnit(qu.unit, factor * qu.amount)).
                 collect(Collectors.toList());
     }
 
     public List<QualityUnit> getIncome(double percent) {
-        double factor = percent * (2 ^ level);
-
+        double factor = percent * getLevelFactor();
         return basicIncome.stream().
                 map(qu -> new QualityUnit(qu.unit, factor * qu.amount)).
                 collect(Collectors.toList());
 
+    }
+
+    private double getLevelFactor() {
+        return (Math.pow(2, level));
     }
 }

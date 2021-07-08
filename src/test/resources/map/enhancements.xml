@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<enhancements>
+
+    <enhancement type="LUMBERMILL">
+        <fieldtypes>
+            <fieldtype type="FORREST"/>
+        </fieldtypes>
+        <income>
+            <qualityunit unit="WOOD" amount="1"/>
+        </income>
+        <buildcost>
+            <qualityunit unit="WOOD" amount="16"/>
+            <qualityunit unit="STONE" amount="16"/>
+        </buildcost>
+        <upkeep>
+            <qualityunit unit="STONE" amount="1"/>
+        </upkeep>
+    </enhancement>
+
+    <enhancement type="QUARRY">
+        <fieldtypes>
+            <fieldtype type="ROCK"/>
+            <fieldtype type="MOUNTAIN"/>
+        </fieldtypes>
+        <income>
+            <qualityunit unit="WOOD" amount="1"/>
+        </income>
+        <buildcost>
+            <qualityunit unit="WOOD" amount="16"/>
+            <qualityunit unit="STONE" amount="16"/>
+        </buildcost>
+        <upkeep>
+            <qualityunit unit="STONE" amount="1"/>
+        </upkeep>
+    </enhancement>
+
+</enhancements>

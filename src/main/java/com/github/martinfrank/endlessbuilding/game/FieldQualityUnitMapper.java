@@ -10,11 +10,11 @@ public class FieldQualityUnitMapper {
 
     public static List<QualityUnit> get(MapFieldType mapFieldType) {
         switch (mapFieldType) {
-            case PLAINS:
+            case PLAIN:
                 return asList(new QualityUnit(ResourecType.HAY, 1));
             case FORREST:
                 return asList(new QualityUnit(ResourecType.WOOD, 1));
-            case ROCKS:
+            case ROCK:
                 return asList(new QualityUnit(ResourecType.STONE, 1));
             case MOUNTAIN:
                 return asList(new QualityUnit(ResourecType.STONE, 1.5));

@@ -1,4 +1,4 @@
-package com.github.martinfrank.endlessbuilding.game.map;
+package com.github.martinfrank.endlessbuilding.game.maploader;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

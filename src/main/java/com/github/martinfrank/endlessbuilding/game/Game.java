@@ -3,7 +3,7 @@ package com.github.martinfrank.endlessbuilding.game;
 import com.github.martinfrank.endlessbuilding.game.event.AddEnhancementHandler;
 import com.github.martinfrank.endlessbuilding.game.event.HarvestEventHandler;
 import com.github.martinfrank.endlessbuilding.game.event.MouseEventHandler;
-import com.github.martinfrank.endlessbuilding.game.map.MapLoader;
+import com.github.martinfrank.endlessbuilding.game.maploader.MapLoader;
 import com.github.martinfrank.endlessbuilding.gui.GuiEventListener;
 import com.github.martinfrank.endlessbuilding.gui.MouseSelection;
 import com.github.martinfrank.endlessbuilding.map.Map;
@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 public class Game implements GuiEventListener {
 
@@ -30,7 +29,6 @@ public class Game implements GuiEventListener {
     private final ResourceManager resourceManager;
     private MapWalker walker;
     private final Thread gameThread;
-    private int i = 0;
 
     private final List<MouseEventHandler> mouseEventHandlers;
 
@@ -39,13 +37,13 @@ public class Game implements GuiEventListener {
     private static final int TICK_DURATION_IN_MILLIS = 250;
     private boolean isRunning;
 
-    public Game(ResourceManager resourceManager) {
+    public Game(ResourceManager resourceManager) throws MalformedURLException, JAXBException {
         this.resourceManager = resourceManager;
         gameThread = new Thread(createGameLoop());
         gameEventListeners = new ArrayList<>();
         mouseEventHandlers = new ArrayList<>();
         mouseEventHandlers.add(new HarvestEventHandler(this));
-        mouseEventHandlers.add(new AddEnhancementHandler(this));
+        mouseEventHandlers.add(new AddEnhancementHandler(this, resourceManager));
         balance = new HashMap<>();
         initBalance();
     }
@@ -63,10 +61,6 @@ public class Game implements GuiEventListener {
                 while (isRunning) {
                     Thread.sleep(TICK_DURATION_IN_MILLIS);
                     tick();
-                    i++;
-                    if (i % 4 == 0) {
-                        LOGGER.debug("tick" + System.currentTimeMillis() / 1000);
-                    }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -78,6 +72,7 @@ public class Game implements GuiEventListener {
         //FIXME errorHandling
         try {
             setupMap();
+
         } catch (MalformedURLException | JAXBException e) {
             e.printStackTrace();
         }
@@ -92,48 +87,49 @@ public class Game implements GuiEventListener {
     }
 
     private void tick() {
-        gatherRessources();
+        gatherResources();
         notifyGui(new GameEvent(this));
     }
 
-    private void gatherRessources() {
+    private void gatherResources() {
         List<Enhancement> enhancements = map.getEnhancements();
-        enhancements.forEach(this::gatherRessources);
+        enhancements.forEach(this::gatherResources);
     }
 
-    private void gatherRessources(Enhancement enhancement) {
+    private void gatherResources(Enhancement enhancement) {
         List<QualityUnit> upkeepCost = enhancement.getUpkeep();
         List<QualityUnit> withdrawFromBalance = reduceBalance(upkeepCost);
         double percent = calculatePercent(upkeepCost, withdrawFromBalance);
         LOGGER.debug("factor (%) " + percent);
-        gatherRessources(enhancement, percent);
+        gatherResources(enhancement, percent);
     }
 
-    private void gatherRessources(Enhancement enhancement, double percent) {
+    private void gatherResources(Enhancement enhancement, double percent) {
         List<QualityUnit> outcomes = enhancement.getIncome(percent);
         for (QualityUnit outcome : outcomes) {
             double current = balance.get(outcome.unit);
             double temp = current;
             current = current + outcome.amount;
             balance.put(outcome.unit, current);
-            LOGGER.debug("increasing {} from {} to {} (walue:{}", outcome.unit, temp, current, outcome.amount);
+            LOGGER.debug("increasing {} from {} to {} (value:{})", outcome.unit, temp, current, outcome.amount);
         }
     }
 
     private double calculatePercent(List<QualityUnit> upkeepCost, List<QualityUnit> fromBalance) {
         double percent = 1;
         for (QualityUnit demand : upkeepCost) {
-            Optional<QualityUnit> balOpt = fromBalance.stream().filter(qu -> qu.unit == demand.unit).findAny();
-            if (!balOpt.isPresent()) {
-                return 0;
-            } else {
-                double bal = balOpt.get().amount;
-                double dem = demand.amount;
-                double newPercent = bal / dem;
-                if (newPercent < percent) {
-                    percent = newPercent;
-                }
+            QualityUnit balanceOf = fromBalance.stream().filter(qu -> qu.unit == demand.unit).findAny().
+                    orElse(new QualityUnit(demand.unit, 0));
+
+            double bal = balanceOf.amount;
+            double dem = demand.amount;
+            double newPercent = bal / dem;
+
+            LOGGER.debug("balance:{}  demand:{} percent:{}", bal, dem, newPercent);
+            if (newPercent < percent) {
+                percent = newPercent;
             }
+
         }
         return percent;
     }
@@ -158,7 +154,6 @@ public class Game implements GuiEventListener {
     public boolean hasBalance(List<QualityUnit> expenses) {
         for (QualityUnit demand : expenses) {
             double bal = balance.get(demand.unit);
-            LOGGER.debug("demand: " + demand.amount + " of " + demand.unit + "  in stock: " + bal);
             if (demand.amount > bal) {
                 return false;
             }
@@ -173,7 +168,7 @@ public class Game implements GuiEventListener {
     }
 
     public void notifyGui(GameEvent gameEvent) {
-        LOGGER.debug("gui event? :" + gameEvent);
+//        LOGGER.debug("gui event? :" + gameEvent);
         if (gameEvent != null) {
             for (GameEventListener eventListener : gameEventListeners) {
                 eventListener.gameEvent(gameEvent);

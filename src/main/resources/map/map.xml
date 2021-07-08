@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <map width="24" height="24">
     <!-- 0 -->
-    <field x="0" y="0" type="PLAINS"/>
+    <field x="0" y="0" type="PLAIN"/>
     <field x="1" y="0" type="FORREST"/>
     <field x="2" y="0" type="MOUNTAIN"/>
-    <field x="3" y="0" type="ROCKS"/>
+    <field x="3" y="0" type="ROCK"/>
     <field x="4" y="0" type="WATER"/>
     <field x="5" y="0" type="WATER"/>
     <field x="6" y="0" type="WATER"/>

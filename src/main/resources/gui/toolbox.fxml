@@ -21,7 +21,12 @@
                         <Image url="@../PNG/Tiles/Medieval/medieval_lumber.png"/>
                     </image>
                 </ImageView>
-                <Label fx:id="basicCosts" text="Basic costs"/>
+                <Label fx:id="toolName" text="tool name">
+                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                </Label>
+                <Label fx:id="basicCosts" text="Basic costs">
+                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                </Label>
             </children>
         </HBox>
 

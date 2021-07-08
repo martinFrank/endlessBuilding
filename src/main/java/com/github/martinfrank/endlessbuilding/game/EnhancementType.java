@@ -2,5 +2,5 @@ package com.github.martinfrank.endlessbuilding.game;
 
 public enum EnhancementType {
 
-    LUMBERMILL
+    LUMBERMILL, QUARRY, MINE, FURNACE, FARM
 }

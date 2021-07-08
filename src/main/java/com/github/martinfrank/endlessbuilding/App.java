@@ -15,7 +15,9 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class App extends Application {
 
@@ -30,7 +32,7 @@ public class App extends Application {
     private Game game;
 
     @Override
-    public void init() {
+    public void init() throws MalformedURLException, JAXBException {
         ResourceManager resourceManager = new ResourceManager(getClass().getClassLoader());
         game = new Game(resourceManager);
         ControllerFactory controllerFactory = new ControllerFactory(game, resourceManager);

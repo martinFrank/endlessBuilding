@@ -111,7 +111,7 @@ public class MapCanvas extends Canvas {
             gc.setFill(Color.BLUE);
         }
 
-        if (field.getData().getMapFieldType() == MapFieldType.PLAINS) {
+        if (field.getData().getMapFieldType() == MapFieldType.PLAIN) {
             gc.setFill(Color.GREEN);
         }
         gc.fillPolygon(xs, ys, amount);
@@ -123,14 +123,12 @@ public class MapCanvas extends Canvas {
             image = resourceManager.image.getMapTileImage(field.getData().getMapFieldType(), scaleFactor);
         }
 
-
         if (image != null) {
             gc.drawImage(image, x, y);
         }
 
         field.getEdges().forEach(this::drawEdge);
         field.getNodes().forEach(this::drawNode);
-
 
     }
 

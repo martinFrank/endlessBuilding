@@ -1,4 +1,4 @@
-package com.github.martinfrank.endlessbuilding.game.map;
+package com.github.martinfrank.endlessbuilding.game.maploader;
 
 import com.github.martinfrank.endlessbuilding.map.Map;
 import com.github.martinfrank.endlessbuilding.map.MapFactory;
@@ -31,15 +31,15 @@ public class MapLoader {
         mapField.getData().setMapFieldType(MapFieldType.valueOf(field.type));
     }
 
-    private com.github.martinfrank.endlessbuilding.game.map.Map loadXmlMap() throws JAXBException, MalformedURLException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(com.github.martinfrank.endlessbuilding.game.map.Map.class);
+    private com.github.martinfrank.endlessbuilding.game.maploader.Map loadXmlMap() throws JAXBException, MalformedURLException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(com.github.martinfrank.endlessbuilding.game.maploader.Map.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        return (com.github.martinfrank.endlessbuilding.game.map.Map)
+        return (com.github.martinfrank.endlessbuilding.game.maploader.Map)
                 jaxbUnmarshaller.unmarshal(resourceManager.getDefaultMap());
     }
 
     public Map loadDefaultMap() throws MalformedURLException, JAXBException {
-        com.github.martinfrank.endlessbuilding.game.map.Map xmlMap = loadXmlMap();
+        com.github.martinfrank.endlessbuilding.game.maploader.Map xmlMap = loadXmlMap();
         Map map = mapFactory.createMap(xmlMap.width, xmlMap.height, MapStyle.HEX_VERTICAL);
         xmlMap.fields.forEach(f -> setField(map, f));
         return map;
